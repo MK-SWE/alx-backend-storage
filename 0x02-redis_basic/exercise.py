@@ -23,6 +23,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """Store the history of inputs and outputs"""
     @wraps(method)
@@ -36,6 +37,7 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(method.__qualname__ + ":outputs", output)
         return output
     return wrapper
+
 
 def replay(fn: Callable):
     """display the history of calls of a particular function"""
@@ -59,6 +61,7 @@ def replay(fn: Callable):
         except Exception:
             output = ""
         print(f"{fn}(*{input}) -> {output}")
+
 
 class Cache:
     '''
@@ -90,10 +93,10 @@ class Cache:
     def get(self, key: str,
             fn:  Optional[Callable] = None) -> Union[str, bytes, int, float]:
         """
-            Retrieve data by key 
+            Retrieve data by key
         """
         data = self._redis.get(key)
-        if fn != None:
+        if fn is not None:
             value = fn(data)
             return value
         return data
